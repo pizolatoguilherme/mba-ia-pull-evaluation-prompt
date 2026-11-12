@@ -1,3 +1,9 @@
+# Prompt inicial de BAIXA QUALIDADE, obtido do LangSmith Prompt Hub com
+#   python src/pull_prompts.py   (fonte: leonanluppi/bug_to_user_story_v1)
+# Problemas intencionais: {bug_report} duplicado no system e no user prompt,
+# instruções vagas, falta de exemplos, sem persona definida e sem formato de saída.
+# A versão otimizada está em prompts/bug_to_user_story_v2.yml.
+
 bug_to_user_story_v1:
   description: Prompt para converter relatos de bugs em User Stories
   system_prompt: 'Você é um assistente que ajuda a transformar relatos de bugs de

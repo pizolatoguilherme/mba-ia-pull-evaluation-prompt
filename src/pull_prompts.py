@@ -78,6 +78,22 @@ def prompt_to_dict(prompt: ChatPromptTemplate, hub_id: str) -> dict:
     return data
 
 
+HEADER = """\
+# Prompt inicial de BAIXA QUALIDADE, obtido do LangSmith Prompt Hub com
+#   python src/pull_prompts.py   (fonte: {hub_id})
+# Problemas intencionais: {{bug_report}} duplicado no system e no user prompt,
+# instruções vagas, falta de exemplos, sem persona definida e sem formato de saída.
+# A versão otimizada está em prompts/bug_to_user_story_v2.yml.
+
+"""
+
+
+def add_header(path: Path, hub_id: str) -> None:
+    """Acrescenta um cabeçalho explicativo ao YAML gerado (save_yaml não grava comentários)."""
+    content = path.read_text(encoding="utf-8")
+    path.write_text(HEADER.format(hub_id=hub_id) + content, encoding="utf-8")
+
+
 def pull_prompts_from_langsmith() -> bool:
     """Faz pull de todos os prompts semente e salva cada um em prompts/<nome>.yml."""
     client = Client()
@@ -101,6 +117,7 @@ def pull_prompts_from_langsmith() -> bool:
         output_path = PROMPTS_DIR / f"{local_name}.yml"
 
         if save_yaml(data, str(output_path)):
+            add_header(output_path, hub_id)
             print(f"✅ Prompt salvo em {output_path.relative_to(PROJECT_ROOT)}")
             print(f"   Variáveis de entrada: {data[local_name]['input_variables']}")
         else:

@@ -21,7 +21,7 @@ O projeto:
 | Precision | 0.82 | **0.85** ✓ | +0.03 |
 | **Média** | 0.81 — ❌ REPROVADO | **0.87 — ✅ APROVADO** | +0.06 |
 
-> Os dois prompts foram avaliados com os mesmos modelos (`gpt-5.4-mini` gerando e `gpt-5.4` avaliando) e o mesmo dataset.
+> Os dois prompts foram avaliados com os mesmos modelos (`gpt-5.4-mini` gerando e `gpt-5.4` avaliando), o mesmo dataset e as mesmas métricas. A v2 foi avaliada com `python src/evaluate.py`, e a v1 com `python src/evaluate_baseline.py`, que reaproveita as funções do `evaluate.py` sem alterá-lo.
 
 ---
 
@@ -99,16 +99,43 @@ Critérios de Aceitação:
   **https://smith.langchain.com/public/1000187d-a852-494a-8125-33ee315c81d1/d**
 - **Prompt publicado no Hub:** `pizolatoguilherme/bug_to_user_story_v2` (público)
 
-### Screenshots
+### Tracing detalhado (links públicos)
 
-| Evidência | Imagem |
-|---|---|
-| Dataset de avaliação com 15 exemplos | ![Dataset](docs/images/dataset.png) |
-| Experimento v2 com todas as notas ≥ 0.8 | ![Experimento v2](docs/images/experimento_v2.png) |
-| Comparação entre as iterações no dashboard | ![Comparação](docs/images/comparacao.png) |
-| Tracing detalhado – exemplo 1 (simples) | ![Trace 1](docs/images/trace_1.png) |
-| Tracing detalhado – exemplo 2 (médio) | ![Trace 2](docs/images/trace_2.png) |
-| Tracing detalhado – exemplo 3 (complexo) | ![Trace 3](docs/images/trace_3.png) |
+Traces completos de 3 exemplos da rodada final, um de cada nível de complexidade. Eles mostram a entrada, as mensagens system e user enviadas ao modelo, a resposta gerada, o modelo usado e os tempos:
+
+| Exemplo | Nível | Trace público |
+|---|---|---|
+| #1 – Botão de adicionar ao carrinho não funciona | simples | https://smith.langchain.com/public/591ee238-3722-4ecc-9dc1-2e007dd5a278/r |
+| #7 – Relatório de vendas demora mais de 2 minutos | médio | https://smith.langchain.com/public/0ce60bea-cc8e-42fb-9e58-077397673ae5/r |
+| #14 – Sistema de relatórios gerenciais (N+1, MRR, cache, CSV) | complexo | https://smith.langchain.com/public/d22701b2-26ab-4ccb-8ea9-deb689e2adcf/r |
+
+### Notas por exemplo (rodada final)
+
+Notas gravadas como feedback no experimento final, com o F1 do mesmo exemplo na v1 para comparação. Os números de exemplo seguem a ordem de `datasets/bug_to_user_story.jsonl`.
+
+| # | Nível | Bug | Help. | Corr. | F1 | Clar. | Prec. | F1 na v1 |
+|---|---|---|---|---|---|---|---|---|
+| 1 | simples | Botão de adicionar ao carrinho não funciona no produ… | 0.92 | 0.94 | 0.97 | 0.93 | 0.90 | 0.60 |
+| 2 | simples | Campo de email aceita texto sem @, permitindo cadast… | 0.94 | 0.91 | 0.90 | 0.95 | 0.93 | 0.57 |
+| 3 | simples | No iOS, ao girar o celular para landscape, o layout … | 0.91 | 0.95 | 0.97 | 0.89 | 0.93 | 0.92 |
+| 4 | simples | Dashboard mostra contagem errada de usuários ativos.… | 0.85 | 0.86 | 0.90 | 0.87 | 0.83 | 0.50 |
+| 5 | simples | Imagens de produtos não aparecem no Safari. No Chrom… | 0.88 | 0.88 | 0.89 | 0.89 | 0.87 | 0.62 |
+| 6 | médio | Webhook de pagamento aprovado não está sendo chamado. | 0.78 | 0.77 | 0.85 | 0.85 | 0.70 | 0.81 |
+| 7 | médio | Relatório de vendas demora mais de 2 minutos para ge… | 0.89 | 0.88 | 0.89 | 0.90 | 0.87 | 0.75 |
+| 8 | médio | Endpoint /api/users/:id retorna dados de qualquer us… | 0.90 | 0.90 | 0.90 | 0.90 | 0.90 | 0.76 |
+| 9 | médio | Pipeline de vendas calcula valor total errado quando… | 0.87 | 0.86 | 0.83 | 0.85 | 0.89 | 0.85 |
+| 10 | médio | App Android trava ao carregar lista de notificações … | 0.86 | 0.84 | 0.84 | 0.89 | 0.84 | 0.79 |
+| 11 | médio | Carrinho permite finalizar compra mesmo com produto … | 0.89 | 0.86 | 0.85 | 0.90 | 0.87 | 0.77 |
+| 12 | médio | Modal de confirmação de exclusão aparece atrás do me… | 0.81 | 0.76 | 0.75 | 0.85 | 0.77 | 0.64 |
+| 13 | complexo | Sistema de checkout com múltiplas falhas críticas. | 0.85 | 0.86 | 0.89 | 0.88 | 0.82 | 0.79 |
+| 14 | complexo | Sistema de relatórios gerenciais com problemas sever… | 0.82 | 0.83 | 0.86 | 0.84 | 0.80 | 0.78 |
+| 15 | complexo | App de produtividade offline-first com bugs críticos… | 0.85 | 0.83 | 0.85 | 0.89 | 0.82 | 0.75 |
+
+O critério de aprovação vale para a **média** de cada métrica no experimento. Individualmente, dois exemplos ainda ficam abaixo de 0.8 em algumas notas. Segundo os comentários dos juízes:
+- **#6 (webhook):** a resposta usou o cliente como persona, em vez de "o sistema". Também omitiu o retorno HTTP 200, o e-mail de confirmação e o log de auditoria esperados.
+- **#12 (modal):** a resposta não trouxe o bloco de acessibilidade esperado (backdrop, foco no modal, fechar com ESC). Além disso, pediu o modal "acima do menu lateral", e não "acima de todos os elementos".
+
+Esses são os próximos alvos se houver uma nova iteração.
 
 Saída do `python src/evaluate.py` na versão final:
 
@@ -165,7 +192,7 @@ Cada linha é um experimento no LangSmith, e todos aparecem no dataset público 
 | Edge cases | Nenhum | Relato vago, logs, múltiplos problemas, segurança, perda de dados, feature request, relato vazio | Robustez fora do caminho feliz |
 | Metadados | version e tags | + `techniques_applied`, `techniques_details`, descrição | Rastreabilidade das técnicas no Hub e nos testes |
 
-O maior ganho foi em **F1-Score** (+0.15) e **Correctness** (+0.08). A v1 até produzia histórias legíveis (Clarity 0.86), mas omitia critérios e contexto técnico esperados (recall baixo), principalmente nos bugs médios e complexos. Na v1, 5 dos 15 exemplos tinham F1 abaixo de 0.70 (o mínimo foi 0.50). Na v2 final, o menor F1 por exemplo é 0.75.
+O maior ganho foi em **F1-Score** (+0.15) e **Correctness** (+0.08). A v1 até produzia histórias legíveis (Clarity 0.86), mas sem formato definido. Ela errava o tamanho e a estrutura esperados, sobretudo nos **bugs simples**: 4 dos 5 exemplos com F1 abaixo de 0.70 eram simples (o mínimo foi 0.50, no bug do dashboard). Nos médios e complexos, faltavam critérios e contexto técnico (recall baixo). Na v2 final nenhum exemplo fica abaixo de 0.75 de F1, e o F1 médio subiu de 0.73 para 0.88.
 
 ---
 
@@ -232,6 +259,13 @@ python src/evaluate.py
 
 Para iterar, repita: editar o YAML → `pytest` → `push_prompts.py` → `evaluate.py`.
 
+Opcional: para gerar a linha de base de comparação, avalie o prompt original (v1) com as mesmas métricas:
+
+```bash
+python src/evaluate_baseline.py                      # avalia leonanluppi/bug_to_user_story_v1
+python src/evaluate_baseline.py <owner/prompt>       # ou qualquer outro prompt do Hub
+```
+
 Para gerar o link público do dataset (rode **uma vez**, porque o link muda a cada novo compartilhamento):
 
 ```bash
@@ -245,6 +279,7 @@ python -c "from dotenv import load_dotenv; load_dotenv('.env'); import os; from 
 | `src/pull_prompts.py` | Conecta ao LangSmith, faz `pull_prompt("leonanluppi/bug_to_user_story_v1", dangerously_pull_public_prompt=True)`, separa as mensagens system e user do `ChatPromptTemplate` e salva o YAML com `save_yaml`. |
 | `src/push_prompts.py` | Lê o YAML, valida (campos obrigatórios, ≥ 2 técnicas, `{bug_report}` só no user prompt, única variável do template, sem `[TODO]`), monta o `ChatPromptTemplate` e faz `push_prompt(..., is_public=True)` com descrição e tags (`technique:*`). |
 | `tests/test_prompts.py` | 6 testes obrigatórios (system prompt, persona, formato, few-shot, sem TODO, ≥ 2 técnicas) + 3 extras (variável só no user prompt, template com uma variável, `validate_prompt_structure`). |
+| `src/evaluate_baseline.py` | Script **adicional**: avalia o prompt v1 (ou outro do Hub) com as mesmas funções e métricas do `evaluate.py`, para a comparação v1 × v2. |
 | `src/evaluate.py`, `src/metrics.py`, `src/utils.py` | Fornecidos pelo desafio (não alterados). |
 
 ### Testes
@@ -283,6 +318,7 @@ tests/test_prompts.py::TestPrompts::test_validate_prompt_structure PASSED
 │   ├── pull_prompts.py              # implementado
 │   ├── push_prompts.py              # implementado
 │   ├── evaluate.py                  # fornecido
+│   ├── evaluate_baseline.py         # adicional (linha de base v1)
 │   ├── metrics.py                   # fornecido
 │   └── utils.py                     # fornecido
 └── tests/
