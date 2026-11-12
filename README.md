@@ -99,6 +99,34 @@ Critérios de Aceitação:
   **https://smith.langchain.com/public/1000187d-a852-494a-8125-33ee315c81d1/d**
 - **Prompt publicado no Hub:** `pizolatoguilherme/bug_to_user_story_v2` (público)
 
+### Screenshots
+
+**Dataset de avaliação com 15 exemplos**
+
+![Dataset de avaliação com 15 exemplos](docs/images/dataset.png)
+
+**Experimento final da v2: todas as médias ≥ 0.8** (clarity 0.89, correctness 0.86, f1_score 0.88, helpfulness 0.87, precision 0.85)
+
+![Experimento final da v2](docs/images/experimento_v2.png)
+
+**Comparação das iterações no dashboard.** A coluna **A** é o v1 original, e as colunas B a E são as rodadas da v2. Os gráficos mostram as 5 métricas, a latência, os tokens e o custo de cada experimento. Na tabela, as saídas do v1 começam com `**User Story**` em markdown e trazem um formato livre. As da v2 seguem o padrão "Como um…, eu quero…, para que…".
+
+![Comparação entre as iterações](docs/images/comparacao.png)
+
+**Tracing detalhado de 3 exemplos**
+
+Exemplo #1 (simples): árvore `Target → RunnableSequence → ChatPromptTemplate → ChatOpenAI`, com as mensagens System (prompt v2) e User (relato) enviadas ao modelo e a resposta gerada.
+
+![Trace do exemplo simples](docs/images/trace_1.png)
+
+Exemplo #7 (médio): relatório de vendas lento. As 5 notas aparecem como feedback, e a resposta define a meta "menos de 30 segundos".
+
+![Trace do exemplo médio](docs/images/trace_2.png)
+
+Exemplo #14 (complexo): relatórios gerenciais com N+1, MRR inconsistente, cache e exportação.
+
+![Trace do exemplo complexo](docs/images/trace_3.png)
+
 ### Tracing detalhado (links públicos)
 
 Traces completos de 3 exemplos da rodada final, um de cada nível de complexidade. Eles mostram a entrada, as mensagens system e user enviadas ao modelo, a resposta gerada, o modelo usado e os tempos:
