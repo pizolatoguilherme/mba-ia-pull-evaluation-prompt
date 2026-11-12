@@ -3,6 +3,10 @@
 Solução do desafio do módulo **Prompt Engineering** (MBA IA – Full Cycle).
 O enunciado original está no [repositório base](https://github.com/devfullcycle/mba-ia-pull-evaluation-prompt).
 
+O código está publicado em dois repositórios com o mesmo conteúdo:
+- [pizolatoguilherme/mba-ia-pull-evaluation-prompt](https://github.com/pizolatoguilherme/mba-ia-pull-evaluation-prompt): fork do repositório base, que é a entrega oficial do desafio;
+- [pizolatoguilherme/mba-challenge-prompt-evaluation](https://github.com/pizolatoguilherme/mba-challenge-prompt-evaluation): cópia no portfólio.
+
 O projeto:
 
 1. faz **pull** do prompt de baixa qualidade `leonanluppi/bug_to_user_story_v1` do LangSmith Prompt Hub;
@@ -236,6 +240,7 @@ O maior ganho foi em **F1-Score** (+0.15) e **Correctness** (+0.08). A v1 até p
 ### 1. Instalação
 
 ```bash
+# fork (entrega do desafio) — ou use mba-challenge-prompt-evaluation, que tem o mesmo conteúdo
 git clone https://github.com/pizolatoguilherme/mba-ia-pull-evaluation-prompt.git
 cd mba-ia-pull-evaluation-prompt
 
